@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper:根标签，namespace：命名空间，随便写，一般保证命名空间唯一 -->
+<mapper namespace="com.demo.mybatis.dao.UserMapper">
+    <!-- statement，内容：sql语句。id：唯一标识，随便写，在同一个命名空间下保持唯一
+       resultType：sql语句查询结果集的封装类型,tb_user即为数据库中的表
+     -->
+
+
+    <select id="queryUserById" resultType="com.demo.mybatis.po.User">
+        select
+        tuser.id as id,
+        tuser.c_name as name,
+        tuser.c_age as age
+        from
+        t_user tuser
+        where tuser.id = #{id};
+    </select>
+
+    <select id="queryUserAll" resultType="com.demo.mybatis.po.User">
+        select id, c_name as name, c_age as age from t_user;
+    </select>
+
+    <!--插入数据-->
+    <insert id="insertUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.demo.mybatis.po.User">
+        INSERT INTO t_user (
+        c_name,
+        c_age
+        )
+        VALUES
+        (
+        #{name},
+        #{age}
+        );
+    </insert>
+
+    <update id="updateUser" parameterType="com.demo.mybatis.po.User">
+        UPDATE t_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">c_name = #{name},</if>
+            <if test="age!=null">c_age = #{age}</if>
+        </trim>
+        WHERE
+        (id = #{id});
+    </update>
+
+    <delete id="deleteUserById">
+        delete from t_user where id=#{id}
+    </delete>
+    <resultMap type="com.demo.mybatis.po.User" id="UserMap">
+        <!--
+            column:对应的列名
+            property:对应的属性名
+         -->
+        <id column="id" property="id"  />
+        <result column="c_name" property="name" />
+        <result column="c_age" property="age" />
+    </resultMap>
+</mapper>
